@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PopMovies</string>
+    <string name="release_date">Release date: </string>
+    <string name="vote_average">Vote average: </string>
+    <string name="error_occured">Error occured</string>
+    <string name="top_rated">Top rated</string>
+    <string name="most_popular">Most popular</string>
+</resources>
