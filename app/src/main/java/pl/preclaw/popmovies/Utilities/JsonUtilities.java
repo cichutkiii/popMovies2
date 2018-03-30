@@ -3,6 +3,8 @@ package pl.preclaw.popmovies.Utilities;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,64 +53,65 @@ public class JsonUtilities {
 
         return url;
     }
-    public static URL buildThumbnailUrl(String imageName) {
+    public static String buildThumbnailUrl(String imageName) {
 
         Uri builtUri = Uri.parse(STATIC_THUMBNAIL_URL).buildUpon()
                 .appendPath(imageName.substring(1))
                 .build();
 
-        URL url = null;
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        String url;
 
-//        Log.v(TAG, "Built URI " + url);
+            url = builtUri.toString();
 
         return url;
     }
 
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try {
-            InputStream in = urlConnection.getInputStream();
+//    public static String getResponseFromHttpUrl(URL url) {
+//
+//
+//
+////        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+////        try {
+////            InputStream in = urlConnection.getInputStream();
+////
+////            Scanner scanner = new Scanner(in);
+////            scanner.useDelimiter("\\A");
+////
+////            boolean hasInput = scanner.hasNext();
+////            if (hasInput) {
+////                return scanner.next();
+////            } else {
+////                return null;
+////            }
+////        } finally {
+////            urlConnection.disconnect();
+////        }
+//    }
 
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
-
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) {
-                return scanner.next();
-            } else {
-                return null;
-            }
-        } finally {
-            urlConnection.disconnect();
-        }
-    }
-
-    public static ArrayList<Movie> parseMovieJson(String json) throws JSONException{
-        ArrayList<Movie> results = new ArrayList<Movie>();
-        String jsonString = json;
-        try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-            JSONArray jsonArray = (JSONArray) jsonObject.get(RESULTS);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonSingleObject = jsonArray.optJSONObject(i);
-                Movie movie = new Movie();
-                movie.setId(jsonSingleObject.optString(ID));
-                movie.setOriginalTitle(jsonSingleObject.optString(ORIGINAL_TITLE));
-                movie.setPlot(jsonSingleObject.optString(OVERVIEW));
-                movie.setReleaseDate(jsonSingleObject.optString(RELEASE_DATE));
-                movie.setThumbnail(buildThumbnailUrl(jsonSingleObject.optString(POSTER_PATH)));
-                movie.setVoteAverage(jsonSingleObject.optString(VOTE_AVERAGE));
-                results.add(movie);
-            }
-        } catch (JSONException e){
-            System.err.println(e);
-        }
-
-        return results;
-    }
+//    public static Movie[] parseMovieJson(String json) throws JSONException{
+//        ArrayList<Movie> results = new ArrayList<Movie>();
+//        Gson gson = new Gson();
+//        String jsonString = json;
+//        Movie[] movies = gson.fromJson(jsonString,Movie[].class);
+//        try {
+//            JSONObject jsonObject = new JSONObject(jsonString);
+//            JSONArray jsonArray = (JSONArray) jsonObject.get(RESULTS);
+//            for (int i = 0; i < jsonArray.length(); i++) {
+//                JSONObject jsonSingleObject = jsonArray.optJSONObject(i);
+//
+//
+////                movie.setId(jsonSingleObject.optString(ID));
+////                movie.setOriginalTitle(jsonSingleObject.optString(ORIGINAL_TITLE));
+////                movie.setPlot(jsonSingleObject.optString(OVERVIEW));
+////                movie.setReleaseDate(jsonSingleObject.optString(RELEASE_DATE));
+////                movie.setThumbnail(buildThumbnailUrl(jsonSingleObject.optString(POSTER_PATH)));
+////                movie.setVoteAverage(jsonSingleObject.optString(VOTE_AVERAGE));
+////                results.add(movie);
+//            }
+//        } catch (JSONException e){
+//            System.err.println(e);
+//        }
+//
+//        return movies;
+//    }
 }

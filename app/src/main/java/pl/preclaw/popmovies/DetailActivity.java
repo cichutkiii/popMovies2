@@ -9,7 +9,6 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import pl.preclaw.popmovies.Utilities.Movie;
 
 public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.movie_iv)
@@ -29,15 +28,15 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        Movie movie = new Movie();
-        movie = (Movie) getIntent().getSerializableExtra(MainActivity.MOVIE);
-        ButterKnife.bind(this);
-
-        titleTv.setText(movie.getOriginalTitle());
-        plotTv.setText(movie.getPlot());
-        rateTv.setText(movie.getVoteAverage());
-        releaseDateTv.setText(movie.getReleaseDate());
-        Picasso.with(this).load(movie.getThumbnail().toString()).into(movieIv);
+//        Movie movie = new Movie();
+//        movie = (Movie) getIntent().getSerializableExtra(MainActivity.MOVIE);
+//        ButterKnife.bind(this);
+//
+//        titleTv.setText(movie.getOriginalTitle());
+//        plotTv.setText(movie.getPlot());
+//        rateTv.setText(movie.getVoteAverage());
+//        releaseDateTv.setText(movie.getReleaseDate());
+//        Picasso.with(this).load(movie.getThumbnail().toString()).into(movieIv);
 
     }
 }

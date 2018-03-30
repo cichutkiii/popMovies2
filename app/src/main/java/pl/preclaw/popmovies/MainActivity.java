@@ -1,10 +1,8 @@
 package pl.preclaw.popmovies;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,16 +12,21 @@ import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.json.JSONException;
-
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.preclaw.popmovies.Utilities.JsonUtilities;
-import pl.preclaw.popmovies.Utilities.Movie;
 import pl.preclaw.popmovies.Utilities.MovieAdapter;
+import pl.preclaw.popmovies.Utilities.MovieResults;
+import pl.preclaw.popmovies.Utilities.StaticData;
+import pl.preclaw.popmovies.Utilities.TmdbInterface;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,21 +37,57 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.tv_error)
     TextView tvError;
     private String jsonResponse;
-    private ArrayList<Movie> movieArrayList;
     public static String MOVIE = "Movie";
     private static final String TOP_RATED = "top_rated";
     private static final String POPULAR = "popular";
+    private static final String STATIC_MOVIES_URL =
+            "http://api.themoviedb.org/";
+    private List<MovieResults.ResultsBean> movieList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        movieArrayList = new ArrayList<Movie>();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(STATIC_MOVIES_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        TmdbInterface myInterface = retrofit.create(TmdbInterface.class);
+        Call<MovieResults> call = myInterface.getDataMovies(TOP_RATED, StaticData.API_KEY);
+        call.enqueue(new Callback<MovieResults>() {
+
+
+
+            @Override
+            public void onResponse(Call<MovieResults> call, Response<MovieResults> response) {
+                MovieResults movieResults = response.body();
+                movieList = movieResults.getResults();
+                gridview.setAdapter(new MovieAdapter(getApplicationContext(), movieList));
+
+                gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView<?> parent, View v,
+                                            int position, long id) {
+//                Movie tempMovie = movieArrayList[position];
+//                Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+//                intent.putExtra(MOVIE, tempMovie);
+//                startActivity(intent);
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieResults> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
         loadMovieData();
     }
     private void loadMovieData(){
-        showMovieDataView();
-        new FetchMoviesData().execute(TOP_RATED);
+//        showMovieDataView();
+//        new FetchMoviesData().execute(TOP_RATED);
     }
 
     private void showMovieDataView(){
@@ -76,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
             URL moviesRequestUrl = JsonUtilities.buildJsonUrl(whatMovies);
 
             try {
-                jsonResponse = JsonUtilities.getResponseFromHttpUrl(moviesRequestUrl);
+//                jsonResponse = JsonUtilities.getResponseFromHttpUrl(moviesRequestUrl);
 
 
                 return jsonResponse;
@@ -92,24 +131,24 @@ public class MainActivity extends AppCompatActivity {
             pbLoader.setVisibility(View.INVISIBLE);
             if (s != null) {
 
-                try {
-                    movieArrayList = JsonUtilities.parseMovieJson(jsonResponse);
-                    Log.d("dane", movieArrayList.get(0).getPlot());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                gridview.setAdapter(new MovieAdapter(getApplicationContext(), movieArrayList));
-
-                gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    public void onItemClick(AdapterView<?> parent, View v,
-                                            int position, long id) {
-                        Movie tempMovie = movieArrayList.get(position);
-                        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-                        intent.putExtra(MOVIE, tempMovie);
-                        startActivity(intent);
-
-                    }
-                });
+//                try {
+//                    movieList = JsonUtilities.parseMovieJson(jsonResponse);
+////                    Log.d("dane", movieArrayList[0].getPlot());
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                gridview.setAdapter(new MovieAdapter(getApplicationContext(), movieArrayList));
+//
+//                gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    public void onItemClick(AdapterView<?> parent, View v,
+//                                            int position, long id) {
+//                        Movie tempMovie = movieArrayList[position];
+//                        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+//                        intent.putExtra(MOVIE, tempMovie);
+//                        startActivity(intent);
+//
+//                    }
+//                });
             } else{
                 showErrorMessage();
             }

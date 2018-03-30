@@ -14,25 +14,25 @@ import android.widget.TextView;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import pl.preclaw.popmovies.R;
 
 public class MovieAdapter extends BaseAdapter {
 
     private Context context;
-    private final ArrayList<Movie> movieArrayList;
+    List<MovieResults.ResultsBean> movieList;
 
 
-
-    public MovieAdapter(Context context, ArrayList<Movie> movies) {
+    public MovieAdapter(Context context,List<MovieResults.ResultsBean> movies) {
 
         this.context = context;
-        movieArrayList = movies;
+        movieList = movies;
     }
 
     @Override
     public int getCount() {
-        return movieArrayList.size();
+        return movieList.size();
     }
 
     @Override
@@ -74,11 +74,11 @@ public class MovieAdapter extends BaseAdapter {
 
 
 
-            viewHolderItem.textViewItem.setText(movieArrayList.get(position).getOriginalTitle());
+            viewHolderItem.textViewItem.setText(movieList.get(position).getOriginal_title());
 
             // set image based on selected text
 
-            Picasso.with(context).load(movieArrayList.get(position).getThumbnail().toString()).into(viewHolderItem.imageView);
+            Picasso.with(context).load(movieList.get(position).getPoster_path()).into(viewHolderItem.imageView);
 
         return convertView;
     }
