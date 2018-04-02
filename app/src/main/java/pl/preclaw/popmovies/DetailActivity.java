@@ -9,6 +9,7 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import pl.preclaw.popmovies.Utilities.MovieResults;
 
 public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.movie_iv)
@@ -21,6 +22,8 @@ public class DetailActivity extends AppCompatActivity {
     TextView rateTv;
     @BindView(R.id.plot_tv)
     TextView plotTv;
+    private MovieResults.ResultsBean movieDetails;
+    public static String MOVIE = "Movie";
 
 
 
@@ -28,15 +31,15 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-//        Movie movie = new Movie();
-//        movie = (Movie) getIntent().getSerializableExtra(MainActivity.MOVIE);
-//        ButterKnife.bind(this);
-//
-//        titleTv.setText(movie.getOriginalTitle());
-//        plotTv.setText(movie.getPlot());
-//        rateTv.setText(movie.getVoteAverage());
-//        releaseDateTv.setText(movie.getReleaseDate());
-//        Picasso.with(this).load(movie.getThumbnail().toString()).into(movieIv);
+
+        movieDetails = (MovieResults.ResultsBean) getIntent().getParcelableExtra(MOVIE);
+        ButterKnife.bind(this);
+
+        titleTv.setText(movieDetails.getOriginal_title());
+        plotTv.setText(movieDetails.getOverview());
+        rateTv.setText(Double.toString(movieDetails.getVote_average()));
+        releaseDateTv.setText(movieDetails.getRelease_date());
+        Picasso.with(this).load(movieDetails.getPoster_path()).into(movieIv);
 
     }
 }

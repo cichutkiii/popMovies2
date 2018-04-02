@@ -20,39 +20,11 @@ import java.util.Scanner;
 import static android.content.ContentValues.TAG;
 
 public class JsonUtilities {
-    private static final String STATIC_MOVIES_URL =
-            "http://api.themoviedb.org/3/movie";
+
     private static final String STATIC_THUMBNAIL_URL =
             "http://image.tmdb.org/t/p/w185";
 
-    private static final String API_KEY = "api_key";
-    private static final String RESULTS = "results";
-    private static final String ID = "id";
-    private static final String VOTE_AVERAGE = "vote_average";
-    private static final String ORIGINAL_TITLE = "original_title";
-    private static final String POSTER_PATH = "poster_path";
-    private static final String RELEASE_DATE = "release_date";
-    private static final String OVERVIEW = "overview";
 
-
-    public static URL buildJsonUrl(String path) {
-
-        Uri builtUri = Uri.parse(STATIC_MOVIES_URL).buildUpon()
-                .appendPath(path)
-                .appendQueryParameter(API_KEY, StaticData.API_KEY)
-                .build();
-
-        URL url = null;
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-//        Log.v(TAG, "Built URI " + url);
-
-        return url;
-    }
     public static String buildThumbnailUrl(String imageName) {
 
         Uri builtUri = Uri.parse(STATIC_THUMBNAIL_URL).buildUpon()
@@ -66,52 +38,4 @@ public class JsonUtilities {
         return url;
     }
 
-//    public static String getResponseFromHttpUrl(URL url) {
-//
-//
-//
-////        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-////        try {
-////            InputStream in = urlConnection.getInputStream();
-////
-////            Scanner scanner = new Scanner(in);
-////            scanner.useDelimiter("\\A");
-////
-////            boolean hasInput = scanner.hasNext();
-////            if (hasInput) {
-////                return scanner.next();
-////            } else {
-////                return null;
-////            }
-////        } finally {
-////            urlConnection.disconnect();
-////        }
-//    }
-
-//    public static Movie[] parseMovieJson(String json) throws JSONException{
-//        ArrayList<Movie> results = new ArrayList<Movie>();
-//        Gson gson = new Gson();
-//        String jsonString = json;
-//        Movie[] movies = gson.fromJson(jsonString,Movie[].class);
-//        try {
-//            JSONObject jsonObject = new JSONObject(jsonString);
-//            JSONArray jsonArray = (JSONArray) jsonObject.get(RESULTS);
-//            for (int i = 0; i < jsonArray.length(); i++) {
-//                JSONObject jsonSingleObject = jsonArray.optJSONObject(i);
-//
-//
-////                movie.setId(jsonSingleObject.optString(ID));
-////                movie.setOriginalTitle(jsonSingleObject.optString(ORIGINAL_TITLE));
-////                movie.setPlot(jsonSingleObject.optString(OVERVIEW));
-////                movie.setReleaseDate(jsonSingleObject.optString(RELEASE_DATE));
-////                movie.setThumbnail(buildThumbnailUrl(jsonSingleObject.optString(POSTER_PATH)));
-////                movie.setVoteAverage(jsonSingleObject.optString(VOTE_AVERAGE));
-////                results.add(movie);
-//            }
-//        } catch (JSONException e){
-//            System.err.println(e);
-//        }
-//
-//        return movies;
-//    }
 }
