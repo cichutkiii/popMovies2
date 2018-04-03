@@ -19,4 +19,10 @@ public interface TmdbInterfaces {
             @Query("api_key") String api_key
     );
 
+    @GET("/3/movie/{id}/reviews")
+    Call<ReviewResults> getMovieReviews(
+            @Path("id") String id,
+            @Query("api_key") String api_key
+    );
+
 }

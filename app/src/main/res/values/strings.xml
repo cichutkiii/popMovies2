@@ -5,5 +5,7 @@
     <string name="error_occured">Error occured</string>
     <string name="top_rated">Top rated</string>
     <string name="most_popular">Most popular</string>
-    <string name="trailers">Trailers</string>
+    <string name="trailers">TRAILERS</string>
+    <string name="author">Author:</string>
+    <string name="reviews">REVIEWS</string>
 </resources>

@@ -13,5 +13,6 @@
     android:orientation="vertical">
     <include layout="@layout/details"/>
     <include layout="@layout/trailers"/>
+    <include layout="@layout/reviews"/>
 </LinearLayout>
 </ScrollView>

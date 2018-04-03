@@ -19,6 +19,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.preclaw.popmovies.Utilities.MovieResults;
+import pl.preclaw.popmovies.Utilities.ReviewAdapter;
+import pl.preclaw.popmovies.Utilities.ReviewResults;
 import pl.preclaw.popmovies.Utilities.StaticData;
 import pl.preclaw.popmovies.Utilities.TmdbInterfaces;
 import pl.preclaw.popmovies.Utilities.TrailerAdapter;
@@ -29,7 +31,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class DetailActivity extends AppCompatActivity  implements TrailerAdapter.ListItemClickListener{
+public class DetailActivity extends AppCompatActivity implements TrailerAdapter.ListItemClickListener,ReviewAdapter.ListItemClickListener {
     @BindView(R.id.movie_iv)
     ImageView movieIv;
     @BindView(R.id.title_tv)
@@ -48,10 +50,16 @@ public class DetailActivity extends AppCompatActivity  implements TrailerAdapter
     RecyclerView rvTrailers;
     @BindView(R.id.trailer_loader)
     ProgressBar trailerLoader;
+    @BindView(R.id.rv_reviews)
+    RecyclerView rvReviews;
+    @BindView(R.id.review_loader)
+    ProgressBar reviewLoader;
     private MovieResults.ResultsBean movieDetails;
     private TrailerAdapter trailerAdapter;
+    private ReviewAdapter reviewAdapter;
     public static String MOVIE = "Movie";
     private List<TrailersResults.ResultsList> trailers;
+    private List<ReviewResults.Reviews> reviews;
 
 
     @Override
@@ -62,6 +70,7 @@ public class DetailActivity extends AppCompatActivity  implements TrailerAdapter
         movieDetails = (MovieResults.ResultsBean) getIntent().getParcelableExtra(MOVIE);
         ButterKnife.bind(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager reviewManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
 
         titleTv.setText(movieDetails.getOriginal_title());
         plotTv.setText(movieDetails.getOverview());
@@ -70,13 +79,15 @@ public class DetailActivity extends AppCompatActivity  implements TrailerAdapter
         Picasso.with(this).load(movieDetails.getPoster_path()).into(movieIv);
         rvTrailers.setHasFixedSize(true);
         rvTrailers.setLayoutManager(layoutManager);
+        rvReviews.setHasFixedSize(true);
+        rvReviews.setLayoutManager(reviewManager);
         getTrailers();
-
+        getReviews();
 
 
     }
 
-    private void getTrailers(){
+    private void getTrailers() {
 
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -89,10 +100,10 @@ public class DetailActivity extends AppCompatActivity  implements TrailerAdapter
             @Override
             public void onResponse(Call<TrailersResults> call, Response<TrailersResults> response) {
                 hideDialog();
-                rvTrailers.setVisibility(View.VISIBLE);
+                rvReviews.setVisibility(View.VISIBLE);
                 TrailersResults trailersResults = response.body();
                 trailers = trailersResults.getResults();
-                setAdapter();
+                setTrailerAdapter();
             }
 
             @Override
@@ -101,8 +112,36 @@ public class DetailActivity extends AppCompatActivity  implements TrailerAdapter
             }
         });
     }
+    private void getReviews() {
 
-    public void setAdapter(){
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(MainActivity.STATIC_MOVIES_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        TmdbInterfaces myInterface = retrofit.create(TmdbInterfaces.class);
+        Call<ReviewResults> call = myInterface.getMovieReviews(Integer.toString(movieDetails.getId()), StaticData.API_KEY);
+        call.enqueue(new Callback<ReviewResults>() {
+            @Override
+            public void onResponse(Call<ReviewResults> call, Response<ReviewResults> response) {
+                hideDialog();
+                rvReviews.setVisibility(View.VISIBLE);
+                ReviewResults reviewResults= response.body();
+                reviews = reviewResults.getReviews();
+                setReviewAdapter();
+            }
+
+            @Override
+            public void onFailure(Call<ReviewResults> call, Throwable t) {
+
+            }
+        });
+    }
+    public void setReviewAdapter() {
+        reviewAdapter = new ReviewAdapter(reviews, this);
+        rvReviews.setAdapter(reviewAdapter);
+    }
+    public void setTrailerAdapter() {
         trailerAdapter = new TrailerAdapter(trailers, this);
         rvTrailers.setAdapter(trailerAdapter);
     }
@@ -113,7 +152,7 @@ public class DetailActivity extends AppCompatActivity  implements TrailerAdapter
     }
 
     public void hideDialog() {
-
+        reviewLoader.setVisibility(View.INVISIBLE);
         trailerLoader.setVisibility(View.INVISIBLE);
 
     }
