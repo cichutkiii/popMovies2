@@ -1,7 +1,6 @@
 package pl.preclaw.popmovies;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,16 +13,14 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.net.URL;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import pl.preclaw.popmovies.Utilities.JsonUtilities;
 import pl.preclaw.popmovies.Utilities.MovieAdapter;
 import pl.preclaw.popmovies.Utilities.MovieResults;
 import pl.preclaw.popmovies.Utilities.StaticData;
-import pl.preclaw.popmovies.Utilities.TmdbInterface;
+import pl.preclaw.popmovies.Utilities.TmdbInterfaces;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     public static String MOVIE = "Movie";
     private static final String TOP_RATED = "top_rated";
     private static final String POPULAR = "popular";
-    private static final String STATIC_MOVIES_URL =
+    public static final String STATIC_MOVIES_URL =
             "http://api.themoviedb.org/";
     private List<MovieResults.ResultsBean> movieList;
     private MovieAdapter mAdapter;
@@ -63,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 .baseUrl(STATIC_MOVIES_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        TmdbInterface myInterface = retrofit.create(TmdbInterface.class);
+        TmdbInterfaces myInterface = retrofit.create(TmdbInterfaces.class);
         Call<MovieResults> call = myInterface.getDataMovies(TOP_RATED, StaticData.API_KEY);
         call.enqueue(new Callback<MovieResults>() {
 

@@ -19,11 +19,12 @@ import java.util.Scanner;
 
 import static android.content.ContentValues.TAG;
 
-public class JsonUtilities {
+public class ParsingUtilities {
 
     private static final String STATIC_THUMBNAIL_URL =
             "http://image.tmdb.org/t/p/w185";
-
+    private static final String STATIC_YOUTUBE_URL =
+            "https://img.youtube.com/vi/";
 
     public static String buildThumbnailUrl(String imageName) {
 
@@ -34,6 +35,20 @@ public class JsonUtilities {
         String url;
 
             url = builtUri.toString();
+
+        return url;
+    }
+
+    public static String buildYoutubeUrl(String imageName) {
+
+        Uri builtUri = Uri.parse(STATIC_YOUTUBE_URL).buildUpon()
+                .appendPath(imageName)
+                .appendPath("mqdefault.jpg")
+                .build();
+
+        String url;
+
+        url = builtUri.toString();
 
         return url;
     }

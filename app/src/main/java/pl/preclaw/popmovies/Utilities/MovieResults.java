@@ -131,7 +131,7 @@ public class MovieResults {
 
         public String getPoster_path() {
 
-            return JsonUtilities.buildThumbnailUrl(poster_path);
+            return ParsingUtilities.buildThumbnailUrl(poster_path);
         }
 
         public void setPoster_path(String poster_path) {
