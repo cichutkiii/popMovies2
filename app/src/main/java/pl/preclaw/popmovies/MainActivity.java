@@ -56,12 +56,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         rvMovies.setHasFixedSize(true);
         lLayout = new GridLayoutManager(MainActivity.this, 2);
         rvMovies.setLayoutManager(lLayout);
+        getMovieData(TOP_RATED);
+
+    }
+    private void getMovieData(String category){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(STATIC_MOVIES_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         TmdbInterfaces myInterface = retrofit.create(TmdbInterfaces.class);
-        Call<MovieResults> call = myInterface.getDataMovies(TOP_RATED, StaticData.API_KEY);
+        Call<MovieResults> call = myInterface.getDataMovies(category, StaticData.API_KEY);
         call.enqueue(new Callback<MovieResults>() {
 
 
@@ -69,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
             public void onResponse(Call<MovieResults> call, Response<MovieResults> response) {
                 MovieResults movieResults = response.body();
                 movieList = movieResults.getResults();
-               loadMovieData();
+                loadMovieData();
 
             }
 
@@ -79,9 +83,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 showErrorMessage();
             }
         });
-
     }
-
     private void loadMovieData() {
         mAdapter = new MovieAdapter(movieList,this);
         rvMovies.setAdapter(mAdapter);
@@ -111,9 +113,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         int id = item.getItemId();
 
         if (id == R.id.action_popular) {
+            getMovieData(POPULAR);
+
             return true;
         }
         if (id == R.id.action_top_rated) {
+            getMovieData(TOP_RATED);
+
             return true;
         }
 

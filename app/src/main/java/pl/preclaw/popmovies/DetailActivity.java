@@ -18,7 +18,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import pl.preclaw.popmovies.Utilities.MovieAdapter;
 import pl.preclaw.popmovies.Utilities.MovieResults;
 import pl.preclaw.popmovies.Utilities.StaticData;
 import pl.preclaw.popmovies.Utilities.TmdbInterfaces;
@@ -62,7 +61,7 @@ public class DetailActivity extends AppCompatActivity  implements TrailerAdapter
 
         movieDetails = (MovieResults.ResultsBean) getIntent().getParcelableExtra(MOVIE);
         ButterKnife.bind(this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
 
         titleTv.setText(movieDetails.getOriginal_title());
         plotTv.setText(movieDetails.getOverview());
