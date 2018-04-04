@@ -69,8 +69,8 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
 
         movieDetails = (MovieResults.ResultsBean) getIntent().getParcelableExtra(MOVIE);
         ButterKnife.bind(this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        LinearLayoutManager reviewManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager trailerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager reviewManager = new LinearLayoutManager(this);
 
         titleTv.setText(movieDetails.getOriginal_title());
         plotTv.setText(movieDetails.getOverview());
@@ -78,9 +78,11 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         releaseDateTv.setText(movieDetails.getRelease_date());
         Picasso.with(this).load(movieDetails.getPoster_path()).into(movieIv);
         rvTrailers.setHasFixedSize(true);
-        rvTrailers.setLayoutManager(layoutManager);
+        rvTrailers.setLayoutManager(trailerManager);
+        rvTrailers.setHorizontalScrollBarEnabled(true);
         rvReviews.setHasFixedSize(true);
         rvReviews.setLayoutManager(reviewManager);
+        rvReviews.setNestedScrollingEnabled(false);
         getTrailers();
         getReviews();
 
