@@ -1,12 +1,14 @@
 package pl.preclaw.popmovies.Utilities;
 
 import android.content.Context;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -25,7 +27,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
 
     public interface ListItemClickListener {
-        void onListItemClick(int clickedItemIndex);
+        void onTrailerItemClick(int clickedItemIndex, View v);
     }
 
 
@@ -66,27 +68,53 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
         TextView trailerView;
         ImageView imageView;
+        TextView shareItem;
 
         public TrailerViewHolder(View itemView) {
             super(itemView);
 
             trailerView = (TextView) itemView.findViewById(R.id.youtube_title);
             imageView = (ImageView) itemView.findViewById(R.id.youtube_thumbnail);
+            shareItem = (TextView) itemView.findViewById(R.id.share_iv);
             itemView.setOnClickListener(this);
         }
 
-        void bind(int listIndex) {
+        void bind(final int listIndex) {
             trailerView.setText(trailerList.get(listIndex).getName());
             Picasso.with(context).load(trailerList.get(listIndex).getYoutubeImageUrl()).into(imageView);
+            shareItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context,trailerList.get(listIndex).getKey(),Toast.LENGTH_LONG).show();
+
+                    String mimeType = "text/plain";
+                    String title = "Trailer Share";
+
+//                    ShareCompat.IntentBuilder
+//                            /* The from method specifies the Context from which this share is coming from */
+//                            .from(this)
+//                            .setType(mimeType)
+//                            .setChooserTitle(title)
+//                            .setText(textToShare)
+//                            .startChooser();
+                }
+            });
         }
 
 
         @Override
         public void onClick(View v) {
-            int clickedPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(clickedPosition);
+
+
+
+                int clickedPosition = getAdapterPosition();
+                mOnClickListener.onTrailerItemClick(clickedPosition, v);
+
 
         }
+
+
+
     }
 }
 

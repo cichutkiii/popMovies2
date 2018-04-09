@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -158,8 +159,19 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     }
 
     @Override
-    public void onListItemClick(int clickedItemIndex) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + trailers.get(clickedItemIndex).getKey()));
-        startActivity(intent);
+    public void onTrailerItemClick(int clickedItemIndex, View v) {
+        if(v.getId() == R.id.share_iv){
+            Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
+        }else{
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + trailers.get(clickedItemIndex).getKey()));
+            startActivity(intent);
+        }
+
     }
+
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+
+    }
+
 }

@@ -2,19 +2,20 @@
 
 Todos:
 
-- **WIP -** Implement sharing functionality to allow the user to share the first trailer’s YouTube URL from the movie details screen.
-- **WIP -** Movie Details layout contains a section for displaying trailer videos and user reviews.
-- **WIP -** When a trailer is selected, app uses an Intent to launch the trailer.
-- **WIP -** App requests for related videos for a selected movie via the /movie/{id}/videos endpoint in a background thread and displays those details when the user selects a movie.
-- **WIP -** App requests for user reviews for a selected movie via the /movie/{id}/reviews endpoint in a background thread and displays those details when the user selects a movie.
+
+- **WIP -** When a user changes the sort criteria (most popular, highest rated, and favorites) the main view gets updated correctly.
+- **WIP -** In the movies detail screen, a user can tap a button(for example, a star) to mark it as a Favorite.
+- **WIP -** The titles and IDs of the user’s favorite movies are stored in a native SQLite database and are exposed via a ContentProvider. This ContentProvider is updated whenever the user favorites or unfavorites a movie. No other persistence libraries are used.
+- **WIP -** When the "favorites" setting option is selected, the main view displays the entire favorites collection based on movie ids stored in the ContentProvider.
+- **WIP -** Extend the favorites ContentProvider to store the movie poster, synopsis, user rating, and release date, and display them even when offline.
 - **Todo -** POC, implementation and use of BottomNavigationBar
 - **Todo -** use gradle.properties to hide API_KEY
 - **Todo -** using placeholder() and error() methods with picasso -> https://www.simplifiedcoding.net/picasso-android-tutorial-picasso-image-loader-library/
-- **Todo -** When a user changes the sort criteria (most popular, highest rated, and favorites) the main view gets updated correctly.
-- **Todo -** In the movies detail screen, a user can tap a button(for example, a star) to mark it as a Favorite.
-- **Todo -** The titles and IDs of the user’s favorite movies are stored in a native SQLite database and are exposed via a ContentProvider. This ContentProvider is updated whenever the user favorites or unfavorites a movie. No other persistence libraries are used.
-- **Todo -** When the "favorites" setting option is selected, the main view displays the entire favorites collection based on movie ids stored in the ContentProvider.
-- **Todo -** Extend the favorites ContentProvider to store the movie poster, synopsis, user rating, and release date, and display them even when offline.
+- **Implemented -** Implement sharing functionality to allow the user to share the first trailer’s YouTube URL from the movie details screen.
+- **Implemented -** Movie Details layout contains a section for displaying trailer videos and user reviews.
+- **Implemented -** When a trailer is selected, app uses an Intent to launch the trailer.
+- **Implemented -** App requests for related videos for a selected movie via the /movie/{id}/videos endpoint in a background thread and displays those details when the user selects a movie.
+- **Implemented -** App requests for user reviews for a selected movie via the /movie/{id}/reviews endpoint in a background thread and displays those details when the user selects a movie.
 - **Implemented -** changing Serializable into parcelable
 - **Implemented -** Change gridView to RecyclerView
 - **Implemented -** POC, implementation Using Retrofit library
