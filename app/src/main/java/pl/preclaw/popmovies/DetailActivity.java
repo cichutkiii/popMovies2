@@ -160,20 +160,25 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
 
     }
 
-    @Override
-    public void onTrailerItemClick(int clickedItemIndex, View v) {
-        if(v.getId() == R.id.share_iv){
-            Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
-        }else{
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + trailers.get(clickedItemIndex).getKey()));
-            startActivity(intent);
-        }
 
-    }
+
+
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
 
+            Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
+
     }
 
+    @Override
+    public void onTrailerItemClick(int clickedItemIndex, long id) {
+        //        if(v.getId() == R.id.share_iv){
+//            Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
+//        }else{
+//            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + trailers.get(clickedItemIndex).getKey()));
+//            startActivity(intent);
+            Toast.makeText(this, Long.toString(id), Toast.LENGTH_LONG).show();
+//        }
+    }
 }

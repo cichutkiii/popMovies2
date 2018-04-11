@@ -25,7 +25,8 @@ public class ParsingUtilities {
             "http://image.tmdb.org/t/p/w185";
     private static final String STATIC_YOUTUBE_URL =
             "https://img.youtube.com/vi/";
-
+    private static final String STATIC_YOUTUBE_ADDRESS_URL =
+            "https://www.youtube.com/watch";
     public static String buildThumbnailUrl(String imageName) {
 
         Uri builtUri = Uri.parse(STATIC_THUMBNAIL_URL).buildUpon()
@@ -44,6 +45,19 @@ public class ParsingUtilities {
         Uri builtUri = Uri.parse(STATIC_YOUTUBE_URL).buildUpon()
                 .appendPath(imageName)
                 .appendPath("mqdefault.jpg")
+                .build();
+
+        String url;
+
+        url = builtUri.toString();
+
+        return url;
+    }
+    public static String buildYoutubeAddressUrl(String key) {
+
+        Uri builtUri = Uri.parse(STATIC_YOUTUBE_ADDRESS_URL).buildUpon()
+
+                .appendQueryParameter("v",key)
                 .build();
 
         String url;
