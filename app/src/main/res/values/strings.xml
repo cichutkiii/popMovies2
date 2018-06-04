@@ -8,4 +8,7 @@
     <string name="trailers">TRAILERS</string>
     <string name="author">Author:</string>
     <string name="reviews">REVIEWS</string>
+    <string name="add_to_fav">Add to fav</string>
+    <string name="remove_from_favourites">Untag Fav movie</string>
+    <string name="favourites">Favourites</string>
 </resources>

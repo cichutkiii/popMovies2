@@ -133,6 +133,10 @@ public class MovieResults {
 
             return ParsingUtilities.buildThumbnailUrl(poster_path);
         }
+        public String getPoster_path_without_build() {
+
+            return poster_path;
+        }
 
         public void setPoster_path(String poster_path) {
             this.poster_path = poster_path;

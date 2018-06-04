@@ -1,11 +1,14 @@
 package pl.preclaw.popmovies;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,12 +16,16 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.preclaw.popmovies.Utilities.MovieAdapter;
 import pl.preclaw.popmovies.Utilities.MovieResults;
+import pl.preclaw.popmovies.Utilities.MoviesContract;
 import pl.preclaw.popmovies.Utilities.StaticData;
 import pl.preclaw.popmovies.Utilities.TmdbInterfaces;
 import retrofit2.Call;
@@ -42,17 +49,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     public static String MOVIE = "Movie";
     private static final String TOP_RATED = "top_rated";
     private static final String POPULAR = "popular";
+    private static final String FAVOURITES = "favourites";
     public static final String STATIC_MOVIES_URL =
             "http://api.themoviedb.org/";
     private List<MovieResults.ResultsBean> movieList;
     private MovieAdapter mAdapter;
     private MovieResults.ResultsBean movieDetails;
+    private MovieResults.ResultsBean movieItem;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvMovies.setHasFixedSize(true);
         lLayout = new GridLayoutManager(MainActivity.this, 2);
         rvMovies.setLayoutManager(lLayout);
@@ -60,29 +70,50 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
     }
     private void getMovieData(String category){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(STATIC_MOVIES_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        TmdbInterfaces myInterface = retrofit.create(TmdbInterfaces.class);
-        Call<MovieResults> call = myInterface.getDataMovies(category, StaticData.API_KEY);
-        call.enqueue(new Callback<MovieResults>() {
+        if(category == FAVOURITES){
 
-
-            @Override
-            public void onResponse(Call<MovieResults> call, Response<MovieResults> response) {
-                MovieResults movieResults = response.body();
-                movieList = movieResults.getResults();
-                loadMovieData();
-
+            movieList.clear();
+            Cursor mCursor = getContentResolver().query(MoviesContract.MovieEntry.CONTENT_URI,
+                    null,
+                    null,null,null);
+            for(mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                movieItem = new MovieResults.ResultsBean();
+                movieItem.setId(mCursor.getInt(1));
+                movieItem.setVote_average(mCursor.getDouble(2));
+                movieItem.setPoster_path(mCursor.getString(3));
+                movieItem.setOriginal_title(mCursor.getString(4));
+                movieItem.setOverview(mCursor.getString(5));
+                movieItem.setRelease_date(mCursor.getString(6));
+                movieList.add(movieItem);
             }
+            loadMovieData();
+        } else {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(STATIC_MOVIES_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            TmdbInterfaces myInterface = retrofit.create(TmdbInterfaces.class);
+            Call<MovieResults> call = myInterface.getDataMovies(category, StaticData.API_KEY);
+            call.enqueue(new Callback<MovieResults>() {
 
-            @Override
-            public void onFailure(Call<MovieResults> call, Throwable t) {
-                t.printStackTrace();
-                showErrorMessage();
-            }
-        });
+
+                @Override
+                public void onResponse(Call<MovieResults> call, Response<MovieResults> response) {
+                    MovieResults movieResults = response.body();
+                    movieList = movieResults.getResults();
+                    loadMovieData();
+
+                }
+
+                @Override
+                public void onFailure(Call<MovieResults> call, Throwable t) {
+                    t.printStackTrace();
+                    showErrorMessage();
+                }
+            });
+        }
+
     }
     private void loadMovieData() {
         mAdapter = new MovieAdapter(movieList,this);
@@ -119,6 +150,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         }
         if (id == R.id.action_top_rated) {
             getMovieData(TOP_RATED);
+
+            return true;
+        }
+        if (id == R.id.action_favourites) {
+            getMovieData(FAVOURITES);
 
             return true;
         }

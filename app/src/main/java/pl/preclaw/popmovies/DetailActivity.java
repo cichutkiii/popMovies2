@@ -1,13 +1,16 @@
 package pl.preclaw.popmovies;
 
-import android.content.Intent;
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.Guideline;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,6 +23,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.preclaw.popmovies.Utilities.MovieResults;
+import pl.preclaw.popmovies.Utilities.MoviesContract;
 import pl.preclaw.popmovies.Utilities.ReviewAdapter;
 import pl.preclaw.popmovies.Utilities.ReviewResults;
 import pl.preclaw.popmovies.Utilities.StaticData;
@@ -32,7 +36,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class DetailActivity extends AppCompatActivity implements TrailerAdapter.ListItemClickListener,ReviewAdapter.ListItemClickListener {
+public class DetailActivity extends AppCompatActivity implements TrailerAdapter.ListItemClickListener, ReviewAdapter.ListItemClickListener {
     @BindView(R.id.movie_iv)
     ImageView movieIv;
     @BindView(R.id.title_tv)
@@ -55,6 +59,8 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     RecyclerView rvReviews;
     @BindView(R.id.review_loader)
     ProgressBar reviewLoader;
+    @BindView(R.id.fav_btn)
+    Button favBtn;
     private MovieResults.ResultsBean movieDetails;
     private TrailerAdapter trailerAdapter;
     private ReviewAdapter reviewAdapter;
@@ -68,7 +74,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        movieDetails = (MovieResults.ResultsBean) getIntent().getParcelableExtra(MOVIE);
+        movieDetails = getIntent().getParcelableExtra(MOVIE);
         ButterKnife.bind(this);
         LinearLayoutManager trailerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         LinearLayoutManager reviewManager = new LinearLayoutManager(this);
@@ -84,10 +90,59 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         rvReviews.setHasFixedSize(true);
         rvReviews.setLayoutManager(reviewManager);
         rvReviews.setNestedScrollingEnabled(false);
+        checkIfAdded();
+        favBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!checkIfAdded()){
+                ContentValues contentValues = new ContentValues();
+                // Put the task description and selected mPriority into the ContentValues
+                contentValues.put(MoviesContract.MovieEntry.COLUMN_ORIGINAL_TITLE, movieDetails.getOriginal_title());
+                contentValues.put(MoviesContract.MovieEntry.COLUMN_ID, movieDetails.getId());
+                contentValues.put(MoviesContract.MovieEntry.COLUMN_OVERVIEW, movieDetails.getOverview());
+                contentValues.put(MoviesContract.MovieEntry.COLUMN_POSTER_PATH, movieDetails.getPoster_path_without_build());
+
+                    contentValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, movieDetails.getRelease_date());
+                contentValues.put(MoviesContract.MovieEntry.COLUMN_VOTE_AVERAGE, movieDetails.getVote_average());
+                Uri uri = getContentResolver().insert(MoviesContract.MovieEntry.CONTENT_URI,contentValues);
+                if(uri != null) {
+                    checkIfAdded();
+
+                }
+                } else{
+
+
+                    getContentResolver().delete(MoviesContract.MovieEntry.CONTENT_URI,
+                            MoviesContract.MovieEntry.COLUMN_ID + "=" +
+                                    movieDetails.getId(),null);
+                    checkIfAdded();
+                }
+
+
+            }
+        });
+
         getTrailers();
         getReviews();
 
 
+    }
+
+    private boolean checkIfAdded(){
+        Cursor cursor = getContentResolver().query(MoviesContract.MovieEntry.CONTENT_URI,
+                null,
+                MoviesContract.MovieEntry.COLUMN_ID + "=" +
+                movieDetails.getId(),null,null);
+//        Toast.makeText(getBaseContext(), Integer.toString(cursor.getCount()), Toast.LENGTH_LONG).show();
+
+        if(cursor.getCount()>0){
+            favBtn.setText(R.string.remove_from_favourites);
+            return true;
+        } else{
+
+            favBtn.setText(R.string.add_to_fav);
+            return false;
+        }
     }
 
     private void getTrailers() {
@@ -115,6 +170,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
             }
         });
     }
+
     private void getReviews() {
 
 
@@ -129,7 +185,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
             public void onResponse(Call<ReviewResults> call, Response<ReviewResults> response) {
                 hideDialog();
                 rvReviews.setVisibility(View.VISIBLE);
-                ReviewResults reviewResults= response.body();
+                ReviewResults reviewResults = response.body();
                 reviews = reviewResults.getReviews();
                 setReviewAdapter();
             }
@@ -140,10 +196,12 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
             }
         });
     }
+
     public void setReviewAdapter() {
         reviewAdapter = new ReviewAdapter(reviews, this);
         rvReviews.setAdapter(reviewAdapter);
     }
+
     public void setTrailerAdapter() {
         trailerAdapter = new TrailerAdapter(trailers, this);
         rvTrailers.setAdapter(trailerAdapter);
@@ -161,13 +219,10 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     }
 
 
-
-
-
     @Override
     public void onListItemClick(int clickedItemIndex) {
 
-            Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
 
     }
 
@@ -178,7 +233,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
 //        }else{
 //            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + trailers.get(clickedItemIndex).getKey()));
 //            startActivity(intent);
-            Toast.makeText(this, Long.toString(id), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, Long.toString(id), Toast.LENGTH_LONG).show();
 //        }
     }
 }

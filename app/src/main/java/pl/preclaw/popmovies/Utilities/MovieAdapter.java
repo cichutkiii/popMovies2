@@ -45,10 +45,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
             MovieViewHolder viewHolder = new MovieViewHolder(view);
 
-            viewHolder.movieTitleView.setText("ViewHolder index: " + viewHolderCount);
-
-
-
             viewHolderCount++;
 
             return viewHolder;
@@ -73,8 +69,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             public MovieViewHolder(View itemView) {
                 super(itemView);
 
-                movieTitleView = (TextView) itemView.findViewById(R.id.title);
-                imageView = (ImageView) itemView.findViewById(R.id.thumbnail);
+                movieTitleView = itemView.findViewById(R.id.title);
+                imageView = itemView.findViewById(R.id.thumbnail);
                 itemView.setOnClickListener(this);
             }
 

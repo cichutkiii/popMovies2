@@ -20,6 +20,10 @@
         </activity>
         <activity android:name=".DetailActivity"
             android:parentActivityName=".MainActivity"></activity>
+        <provider
+            android:name="pl.preclaw.popmovies.Utilities.MoviesProvider"
+            android:authorities="pl.preclaw.popmovies"
+            android:exported="false"/>
     </application>
 
 </manifest>
