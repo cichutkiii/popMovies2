@@ -104,31 +104,23 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_ID, movieDetails.getId());
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_OVERVIEW, movieDetails.getOverview());
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_POSTER_PATH, movieDetails.getPoster_path_without_build());
-
-                    contentValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, movieDetails.getRelease_date());
+                contentValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, movieDetails.getRelease_date());
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_VOTE_AVERAGE, movieDetails.getVote_average());
                 Uri uri = getContentResolver().insert(MoviesContract.MovieEntry.CONTENT_URI,contentValues);
                 if(uri != null) {
                     checkIfAdded();
-
                 }
                 } else{
-
-
                     getContentResolver().delete(MoviesContract.MovieEntry.CONTENT_URI,
                             MoviesContract.MovieEntry.COLUMN_ID + "=" +
                                     movieDetails.getId(),null);
                     checkIfAdded();
                 }
-
-
             }
         });
 
         getTrailers();
         getReviews();
-
-
     }
 
     private boolean checkIfAdded(){
@@ -136,7 +128,6 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
                 null,
                 MoviesContract.MovieEntry.COLUMN_ID + "=" +
                 movieDetails.getId(),null,null);
-//        Toast.makeText(getBaseContext(), Integer.toString(cursor.getCount()), Toast.LENGTH_LONG).show();
 
         if(cursor.getCount()>0){
             favBtn.setText(R.string.remove_from_favourites);
@@ -149,8 +140,6 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     }
 
     private void getTrailers() {
-
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MainActivity.STATIC_MOVIES_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -210,21 +199,13 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         rvTrailers.setAdapter(trailerAdapter);
     }
 
-
-
     public void hideDialog() {
         reviewLoader.setVisibility(View.INVISIBLE);
         trailerLoader.setVisibility(View.INVISIBLE);
-
     }
-
-
     @Override
     public void onListItemClick(int clickedItemIndex) {
-
     }
-
-
 
     @Override
     public void onTrailerItemClick(int clickedItemIndex, long id,View view) {

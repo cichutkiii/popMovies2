@@ -25,7 +25,6 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     private static int viewHolderCount;
     private List<TrailersResults.ResultsList> trailerList;
     private Context context;
-    private Activity activity;
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
