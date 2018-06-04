@@ -35,7 +35,7 @@
                 android:paddingRight="@dimen/album_title_padding"
                 android:paddingTop="@dimen/album_title_padding"
                 android:paddingBottom="@dimen/album_title_padding"
-                android:text="test"
+                android:text="@string/title"
                 android:gravity="center_vertical"
                 />
 
@@ -43,10 +43,10 @@
                 android:id="@+id/share_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="test"
+                android:text="@string/share"
                 android:layout_alignEnd="@+id/youtube_thumbnail"
                 android:layout_alignTop="@+id/youtube_thumbnail"
-                card_view:srcCompat="?android:attr/actionModeShareDrawable" />
+                 />
 
 
         </RelativeLayout>

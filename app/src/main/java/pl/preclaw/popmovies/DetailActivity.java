@@ -1,10 +1,12 @@
 package pl.preclaw.popmovies;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.Guideline;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.preclaw.popmovies.Utilities.MovieResults;
 import pl.preclaw.popmovies.Utilities.MoviesContract;
+import pl.preclaw.popmovies.Utilities.ParsingUtilities;
 import pl.preclaw.popmovies.Utilities.ReviewAdapter;
 import pl.preclaw.popmovies.Utilities.ReviewResults;
 import pl.preclaw.popmovies.Utilities.StaticData;
@@ -207,10 +210,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         rvTrailers.setAdapter(trailerAdapter);
     }
 
-    public void showDialog() {
 
-        trailerLoader.setVisibility(View.VISIBLE);
-    }
 
     public void hideDialog() {
         reviewLoader.setVisibility(View.INVISIBLE);
@@ -222,18 +222,28 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     @Override
     public void onListItemClick(int clickedItemIndex) {
 
-        Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
-
     }
 
+
+
     @Override
-    public void onTrailerItemClick(int clickedItemIndex, long id) {
-        //        if(v.getId() == R.id.share_iv){
-//            Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
-//        }else{
-//            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + trailers.get(clickedItemIndex).getKey()));
-//            startActivity(intent);
-        Toast.makeText(this, Long.toString(id), Toast.LENGTH_LONG).show();
-//        }
+    public void onTrailerItemClick(int clickedItemIndex, long id,View view) {
+        if(view.getId()==R.id.share_iv){
+            String mimeType = "text/plain";
+            String title = "Trailer Share";
+            String sharedText = "Check this trailer:" + ParsingUtilities.buildYoutubeAddressUrl(trailers.get(clickedItemIndex).getKey());
+            ShareCompat.IntentBuilder
+                    .from(this)
+                    .setType(mimeType)
+                    .setChooserTitle(title)
+                    .setText(sharedText)
+                    .startChooser();
+
+        } else{
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + trailers.get(clickedItemIndex).getKey()));
+            startActivity(intent);
+
+        }
+
     }
 }

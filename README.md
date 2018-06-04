@@ -2,10 +2,8 @@
 
 Todos:
 
-
-- **WIP -** Implement sharing functionality to allow the user to share the first trailer’s YouTube URL from the movie details screen.
 - **Todo -** use gradle.properties to hide API_KEY
-- **Todo -** using placeholder() and error() methods with picasso -> https://www.simplifiedcoding.net/picasso-android-tutorial-picasso-image-loader-library/
+- **Implemented -** Implement sharing functionality to allow the user to share the first trailer’s YouTube URL from the movie details screen.
 - **Implemented -** When a user changes the sort criteria (most popular, highest rated, and favorites) the main view gets updated correctly.
 - **Implemented -** In the movies detail screen, a user can tap a button(for example, a star) to mark it as a Favorite.
 - **Implemented -** The titles and IDs of the user’s favorite movies are stored in a native SQLite database and are exposed via a ContentProvider. This ContentProvider is updated whenever the user favorites or unfavorites a movie. No other persistence libraries are used.

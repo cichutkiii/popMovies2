@@ -11,4 +11,6 @@
     <string name="add_to_fav">Add to fav</string>
     <string name="remove_from_favourites">Untag Fav movie</string>
     <string name="favourites">Favourites</string>
+    <string name="share">share</string>
+    <string name="title">Title</string>
 </resources>

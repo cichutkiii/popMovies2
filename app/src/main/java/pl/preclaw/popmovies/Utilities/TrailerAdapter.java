@@ -2,11 +2,11 @@ package pl.preclaw.popmovies.Utilities;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.app.ShareCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,10 +15,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import pl.preclaw.popmovies.DetailActivity;
 import pl.preclaw.popmovies.R;
 
-public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder> {
+
+public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder> implements AdapterView.OnItemClickListener{
 
 
     final private TrailerAdapter.ListItemClickListener mOnClickListener;
@@ -27,10 +27,15 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     private Context context;
     private Activity activity;
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(context,Integer.toString(position),Toast.LENGTH_LONG).show();
+
+    }
 
 
     public interface ListItemClickListener {
-        void onTrailerItemClick(int clickedItemIndex, long id);
+        void onTrailerItemClick(int clickedItemIndex, long id, View v);
     }
 
 
@@ -77,32 +82,18 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         public TrailerViewHolder(View itemView) {
             super(itemView);
 
-            trailerView = (TextView) itemView.findViewById(R.id.youtube_title);
-            imageView = (ImageView) itemView.findViewById(R.id.youtube_thumbnail);
-            shareItem = (TextView) itemView.findViewById(R.id.share_iv);
+            trailerView = itemView.findViewById(R.id.youtube_title);
+            imageView = itemView.findViewById(R.id.youtube_thumbnail);
+            shareItem = itemView.findViewById(R.id.share_iv);
             itemView.setOnClickListener(this);
+            shareItem.setOnClickListener(this);
         }
 
         void bind(final int listIndex) {
             trailerView.setText(trailerList.get(listIndex).getName());
             Picasso.with(context).load(trailerList.get(listIndex).getYoutubeImageUrl()).into(imageView);
-//
-//            shareItem.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Toast.makeText(context,trailerList.get(listIndex).getKey(),Toast.LENGTH_LONG).show();
-//
-//                    String mimeType = "text/plain";
-//                    String title = "Trailer Share";
-//                    String sharedText = "Check this trailer:" + ParsingUtilities.buildYoutubeAddressUrl(trailerList.get(listIndex).getKey());
-//                    ShareCompat.IntentBuilder
-//                            .from(context)
-//                            .setType(mimeType)
-//                            .setChooserTitle(title)
-//                            .setText(sharedText)
-//                            .startChooser();
-//                }
-//            });
+
+
         }
 
 
@@ -113,7 +104,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
                 int clickedPosition = getAdapterPosition();
                 long id = getItemId();
-                mOnClickListener.onTrailerItemClick(clickedPosition, id);
+                mOnClickListener.onTrailerItemClick(clickedPosition, id,v);
 
 
         }
