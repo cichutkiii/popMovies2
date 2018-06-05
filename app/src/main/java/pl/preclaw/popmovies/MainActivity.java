@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -45,13 +46,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     RecyclerView rvMovies;
 
     private GridLayoutManager lLayout;
-
+    String displayedData;
     public static String MOVIE = "Movie";
     private static final String TOP_RATED = "top_rated";
     private static final String POPULAR = "popular";
     private static final String FAVOURITES = "favourites";
     public static final String STATIC_MOVIES_URL =
             "http://api.themoviedb.org/";
+    private static final String LIFECYCLE_CALLBACK_POSITION = "callbacks";
     private List<MovieResults.ResultsBean> movieList;
     private MovieAdapter mAdapter;
     private MovieResults.ResultsBean movieDetails;
@@ -66,16 +68,26 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         rvMovies.setHasFixedSize(true);
         lLayout = new GridLayoutManager(MainActivity.this, 2);
         rvMovies.setLayoutManager(lLayout);
-        getMovieData(TOP_RATED);
 
+        if (savedInstanceState != null) {
+            displayedData = savedInstanceState.getString(LIFECYCLE_CALLBACK_POSITION);
+            getMovieData(displayedData);
+        } else{
+            getMovieData(TOP_RATED);
+        }
     }
     private void getMovieData(String category){
         if(category == FAVOURITES){
+            if(movieList == null){
 
-            movieList.clear();
+                movieList = new ArrayList<>();
+            } else {
+                movieList.clear();
+            }
             Cursor mCursor = getContentResolver().query(MoviesContract.MovieEntry.CONTENT_URI,
                     null,
                     null,null,null);
+            assert mCursor != null;
             for(mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
                 // The Cursor is now set to the right position
                 movieItem = new MovieResults.ResultsBean();
@@ -83,11 +95,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 movieItem.setVote_average(mCursor.getDouble(2));
                 movieItem.setPoster_path(mCursor.getString(3));
                 movieItem.setOriginal_title(mCursor.getString(4));
+
                 movieItem.setOverview(mCursor.getString(5));
                 movieItem.setRelease_date(mCursor.getString(6));
                 movieList.add(movieItem);
             }
             loadMovieData();
+            showMovieDataView();
         } else {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(STATIC_MOVIES_URL)
@@ -140,22 +154,35 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(LIFECYCLE_CALLBACK_POSITION,displayedData);
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.action_popular) {
             getMovieData(POPULAR);
-
+            displayedData = POPULAR;
             return true;
         }
         if (id == R.id.action_top_rated) {
             getMovieData(TOP_RATED);
-
+displayedData = TOP_RATED;
             return true;
         }
         if (id == R.id.action_favourites) {
             getMovieData(FAVOURITES);
-
+displayedData = FAVOURITES;
             return true;
         }
 
