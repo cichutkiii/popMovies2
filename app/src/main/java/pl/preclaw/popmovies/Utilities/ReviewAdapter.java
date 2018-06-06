@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pl.preclaw.popmovies.R;
@@ -19,7 +20,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
 final private ReviewAdapter.ListItemClickListener mOnClickListener;
 private static int viewHolderCount;
-private List<ReviewResults.Reviews> ReviewList;
+private ArrayList<ReviewResults.Reviews> ReviewList;
 private Context context;
 
 
@@ -29,7 +30,7 @@ public interface ListItemClickListener {
 }
 
 
-    public ReviewAdapter(List<ReviewResults.Reviews> ReviewLists, ReviewAdapter.ListItemClickListener listener) {
+    public ReviewAdapter(ArrayList<ReviewResults.Reviews> ReviewLists, ReviewAdapter.ListItemClickListener listener) {
         ReviewList = ReviewLists;
         mOnClickListener = listener;
         viewHolderCount = 0;
@@ -70,8 +71,8 @@ class ReviewViewHolder extends RecyclerView.ViewHolder
     public ReviewViewHolder(View itemView) {
         super(itemView);
 
-        reviewAuthorView = (TextView) itemView.findViewById(R.id.author);
-        reviewContentView = (TextView) itemView.findViewById(R.id.content);
+        reviewAuthorView = itemView.findViewById(R.id.author);
+        reviewContentView = itemView.findViewById(R.id.content);
         itemView.setOnClickListener(this);
     }
 

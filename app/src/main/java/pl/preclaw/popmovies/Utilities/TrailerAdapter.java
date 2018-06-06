@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pl.preclaw.popmovies.R;
@@ -23,7 +24,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
     final private TrailerAdapter.ListItemClickListener mOnClickListener;
     private static int viewHolderCount;
-    private List<TrailersResults.ResultsList> trailerList;
+    private ArrayList<TrailersResults.ResultsList> trailerList;
     private Context context;
 
     @Override
@@ -38,7 +39,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     }
 
 
-    public TrailerAdapter(List<TrailersResults.ResultsList> trailerLists, TrailerAdapter.ListItemClickListener listener) {
+    public TrailerAdapter(ArrayList<TrailersResults.ResultsList> trailerLists, TrailerAdapter.ListItemClickListener listener) {
         trailerList = trailerLists;
         mOnClickListener = listener;
         viewHolderCount = 0;

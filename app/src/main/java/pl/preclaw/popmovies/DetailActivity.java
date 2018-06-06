@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.constraint.Guideline;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -14,12 +15,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -64,24 +68,57 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     ProgressBar reviewLoader;
     @BindView(R.id.fav_btn)
     Button favBtn;
+    ScrollView scrollView;
     private MovieResults.ResultsBean movieDetails;
     private TrailerAdapter trailerAdapter;
     private ReviewAdapter reviewAdapter;
     public static String MOVIE = "Movie";
-    private List<TrailersResults.ResultsList> trailers;
-    private List<ReviewResults.Reviews> reviews;
+    private ArrayList<TrailersResults.ResultsList> trailers;
+    private ArrayList<ReviewResults.Reviews> reviews;
+    private static final String LIFECYCLE_LAYOUT_TRAILERS = "Layouttrailers";
+    private static final String LIFECYCLE_LAYOUT_REVIEWS = "Layoutreviews";
+    private static final String LIFECYCLE_REVIEWS = "reviews";
+    private static final String LIFECYCLE_TRAILERS = "trailers";
+    private static final String LIFECYCLE_MOVIE = "movieDetails";
+    private static final String LIFECYCLE_POSITION = "position";
 
+    private LinearLayoutManager trailerManager;
+    private LinearLayoutManager reviewManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        movieDetails = getIntent().getParcelableExtra(MOVIE);
-        ButterKnife.bind(this);
-        LinearLayoutManager trailerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        LinearLayoutManager reviewManager = new LinearLayoutManager(this);
 
+        ButterKnife.bind(this);
+        trailerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        reviewManager = new LinearLayoutManager(this);
+        scrollView = findViewById(R.id.detail_layout);
+        if (savedInstanceState != null) {
+
+            trailerManager.onRestoreInstanceState(savedInstanceState.getParcelable(LIFECYCLE_LAYOUT_TRAILERS));
+            reviewManager.onRestoreInstanceState(savedInstanceState.getParcelable(LIFECYCLE_LAYOUT_REVIEWS));
+            movieDetails = savedInstanceState.getParcelable(LIFECYCLE_MOVIE);
+            trailers = savedInstanceState.getParcelableArrayList(LIFECYCLE_TRAILERS);
+            reviews = savedInstanceState.getParcelableArrayList(LIFECYCLE_REVIEWS);
+            setReviewAdapter();
+            setTrailerAdapter();
+            hideDialog();
+            final int[] position = savedInstanceState.getIntArray(LIFECYCLE_POSITION);
+
+            if(position != null)
+                scrollView.post(new Runnable() {
+                    public void run() {
+                        scrollView.scrollTo(position[0], position[1]);
+                    }
+                });
+
+        }else{
+            movieDetails = getIntent().getParcelableExtra(MOVIE);
+            getTrailers();
+            getReviews();
+        }
         titleTv.setText(movieDetails.getOriginal_title());
         plotTv.setText(movieDetails.getOverview());
         rateTv.setText(Double.toString(movieDetails.getVote_average()));
@@ -119,8 +156,20 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
             }
         });
 
-        getTrailers();
-        getReviews();
+
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(LIFECYCLE_LAYOUT_TRAILERS, trailerManager.onSaveInstanceState());
+        outState.putParcelable(LIFECYCLE_LAYOUT_REVIEWS, reviewManager.onSaveInstanceState());
+        outState.putParcelableArrayList(LIFECYCLE_REVIEWS, reviews);
+        outState.putParcelableArrayList(LIFECYCLE_TRAILERS,  trailers);
+        outState.putParcelable(LIFECYCLE_MOVIE, movieDetails);
+        outState.putIntArray(LIFECYCLE_POSITION,
+                new int[]{ scrollView.getScrollX(), scrollView.getScrollY()});
+
     }
 
     private boolean checkIfAdded(){

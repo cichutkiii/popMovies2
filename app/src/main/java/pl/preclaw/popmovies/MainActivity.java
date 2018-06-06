@@ -53,7 +53,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     private static final String FAVOURITES = "favourites";
     public static final String STATIC_MOVIES_URL =
             "http://api.themoviedb.org/";
+    private static final String LIFECYCLE_CALLBACK_LIST = "cat";
     private static final String LIFECYCLE_CALLBACK_POSITION = "callbacks";
+
     private List<MovieResults.ResultsBean> movieList;
     private MovieAdapter mAdapter;
     private MovieResults.ResultsBean movieDetails;
@@ -70,10 +72,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         rvMovies.setLayoutManager(lLayout);
 
         if (savedInstanceState != null) {
-            displayedData = savedInstanceState.getString(LIFECYCLE_CALLBACK_POSITION);
-            getMovieData(displayedData);
+            showMovieDataView();
+        displayedData = savedInstanceState.getString(LIFECYCLE_CALLBACK_LIST);
+        getMovieData(displayedData);
+       lLayout.onRestoreInstanceState(savedInstanceState.getParcelable(LIFECYCLE_CALLBACK_POSITION));
         } else{
+
             getMovieData(TOP_RATED);
+
         }
     }
     private void getMovieData(String category){
@@ -156,8 +162,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(LIFECYCLE_CALLBACK_POSITION,displayedData);
-
+        outState.putString(LIFECYCLE_CALLBACK_LIST,displayedData);
+        outState.putParcelable(LIFECYCLE_CALLBACK_POSITION,lLayout.onSaveInstanceState());
 
     }
 
