@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     private static final String LIFECYCLE_CALLBACK_LIST = "cat";
     private static final String LIFECYCLE_CALLBACK_POSITION = "callbacks";
 
-    private List<MovieResults.ResultsBean> movieList;
+    private ArrayList<MovieResults.ResultsBean> movieList;
     private MovieAdapter mAdapter;
     private MovieResults.ResultsBean movieDetails;
     private MovieResults.ResultsBean movieItem;
@@ -73,14 +73,18 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
         if (savedInstanceState != null) {
             showMovieDataView();
-        displayedData = savedInstanceState.getString(LIFECYCLE_CALLBACK_LIST);
-        getMovieData(displayedData);
+       movieList = savedInstanceState.getParcelableArrayList(LIFECYCLE_CALLBACK_LIST);
        lLayout.onRestoreInstanceState(savedInstanceState.getParcelable(LIFECYCLE_CALLBACK_POSITION));
+       resumeMovieData();
         } else{
 
             getMovieData(TOP_RATED);
 
         }
+    }
+    private void resumeMovieData(){
+
+        loadMovieData();
     }
     private void getMovieData(String category){
         if(category == FAVOURITES){
@@ -162,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(LIFECYCLE_CALLBACK_LIST,displayedData);
+        outState.putParcelableArrayList(LIFECYCLE_CALLBACK_LIST,movieList);
         outState.putParcelable(LIFECYCLE_CALLBACK_POSITION,lLayout.onSaveInstanceState());
 
     }
